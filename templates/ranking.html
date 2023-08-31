@@ -1,0 +1,67 @@
+{% extends "base.html" %} {% block title %}Sample{% endblock %} 
+{% block content %}
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Ranking</h1>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Bar Chart -->
+            <div class="col-xl-12 col-lg-7">      
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Rank by Cluster</h6>
+                </div>
+                <div class="card-body">
+                  <canvas id="rankingChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <!-- Page level plugins -->
+    <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js')}}"></script>
+
+    <!-- Page level custom scripts -->
+    <!-- <script src="{{ url_for('static', filename='js/chart-bar-ranking.js')}}"></script> -->
+    <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js')}}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/demo/chart-bar-demo.js')}}"></script> -->
+    <script>
+      var ctx = document.getElementById("rankingChart")
+      var data = {{datas|tojson}}
+      var chart = new Chart(ctx, 
+      {
+        type: 'bar',
+        data: {
+          labels: data.map(row => row.Cluster),
+          datasets: [
+            {
+              label: 'Total Comments',
+              data: data.map(row => row.Negative_Count),
+              backgroundColor: "rgba(230, 95, 43, 1)",
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+        }
+      }
+      );
+    </script>
+{% endblock %}

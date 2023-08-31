@@ -1,0 +1,132 @@
+{% extends "base.html" %} {% block title %}Sample{% endblock %} 
+{% block content %}
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Clustering</h1>
+
+          <!-- DataTables Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Grouping</h6>
+              <div class="dropdown no-arrow">
+                <button class="btn btn-primary" role="button" type="submit" onclick="call_api()">Process</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                {% if session.clustering %}
+                <table class="table table-borderless" id="dataTable_clustering" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Cluster Number</th>
+                      <th>Cluster Name</th>
+                      <th>Total Comments</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for key, value in group.items() %}
+                    <tr>
+                      <td>{{key}}</td>
+                      <td>Cluster {{key}}</td>
+                      <td>{{value}}</td>
+                      <td>Today</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                <table class="table table-borderless" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Word Cloud</th>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+                  {% for image in images %}
+                  <tbody>
+                    <tr>
+                      <td>
+                        <img src="{{image.path}}" alt="Wordcloud {{loop.index}}">
+                      </td>
+                      <td>
+                        <div class="input-group"></div>
+                        <input class="input-group-text" type="text" name="cloud_name" id="">
+                        <div class="input-group"></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  {% endfor %}
+                </table>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- DataTables Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">100 Video Tiktok</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-borderless" id="dataTable" width="100%" cellspacing="0">
+                  {% if session.clustering %}
+                  <thead>
+                    <tr>
+                      <th>Number</th>
+                      <th>Comment</th>
+                      <th>Cluster Number</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for data in datas %}
+                    <tr>
+                      <td>{{loop.index}}</td>
+                      <td>{{data['komentarClean']}}</td>
+                      <td>{{data['cluster']}}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                  {% else %}
+                  {% endif %}
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <!-- Page level plugins -->
+    <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{{ url_for('static', filename='js/demo/datatables-demo.js')}}"></script>
+    <script>
+      $(document).ready(function() {
+        $('#dataTable_clustering').DataTable({
+          "pageLength": 5
+        });
+      });
+    </script>
+    <script>
+      function call_api() {
+        fetch('/session/{{pagename}}/1').then(response => console.log(response))
+        if(confirm("Proses data?")) {
+            window.location.href = "/{{pagename}}"
+        }
+      }
+    </script>
+{% endblock %}

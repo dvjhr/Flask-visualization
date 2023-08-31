@@ -1,0 +1,76 @@
+{% extends "base.html" %} {% block title %}Sample{% endblock %} 
+{% block content %}
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Charts</h1>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-5">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-pie pt-4">
+                    <canvas id="myPieChart"></canvas>
+                  </div>
+                  <hr>
+                  Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Small -->
+          {% for data in datas %}
+          <div class="card mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">{{ data['Name'] }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="mb-1 large">Accuracy</div>
+              <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: {{(100*data['Accuracy'])|round(2)|int}}%" aria-valuenow="" aria-valuemin="0" aria-valuemax="1">{{data['Accuracy']|round(3)}}</div>
+              </div>
+              <div class="mb-1 large">Precision</div>
+              <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: {{(100*data['Precision'])|round(2)|int}}%" aria-valuenow="" aria-valuemin="0" aria-valuemax="1">{{data['Precision']|round(3)}}</div>
+              </div>
+              <div class="mb-1 large">Recall</div>
+              <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: {{(100*data['Recall'])|round(2)|int}}%" aria-valuenow="" aria-valuemin="0" aria-valuemax="1">{{data['Recall']|round(3)}}</div>
+              </div>
+              <div class="mb-1 large">F1-Score</div>
+              <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: {{(100*data['F1-Score'])|round(2)|int}}%" aria-valuenow="" aria-valuemin="0" aria-valuemax="1">{{data['F1-Score']|round(3)}}</div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <!-- Page level plugins -->
+    <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js')}}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/demo/chart-bar-demo.js')}}"></script>
+{% endblock %}

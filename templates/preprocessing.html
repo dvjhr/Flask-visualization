@@ -1,0 +1,81 @@
+{% extends "base.html" %} {% block title %}Sample{% endblock %} 
+{% block content %}
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Preprocessing</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">100 Video Tiktok</h6>
+              <div class="dropdown no-arrow">
+                <button class="btn btn-primary" role="button" type="submit" onclick="call_api()">Process</button>
+              </div>
+            </div>
+            <div class="card-body">
+              {% if session[pagename] %}
+              <div class="table-responsive">
+                <table class="table table-borderless" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Number</th>
+                      <th>Comment</th>
+                      <th>Date Processed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for data in datas %}
+                    <tr>
+                      <td>{{loop.index}}</td>
+                      <td>{{data['komentarClean']}}</td>
+                      <td>{{session.date}}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              {% else %}
+              <table class="table table-borderless" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Number</th>
+                    <th>Comment</th>
+                    <th>Date Processed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </table>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <!-- Page level plugins -->
+    <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{{ url_for('static', filename='js/demo/datatables-demo.js')}}"></script>
+    <script>
+      function call_api() {
+        console.log("UPDATE SESSION FOR {{pagename}}")
+        fetch('/session/{{pagename}}/1').then(response => console.log(response))
+        if(confirm("Proses data?")) {
+            window.location.href = "/{{pagename}}"
+        }
+      }
+    </script>
+{% endblock %}
