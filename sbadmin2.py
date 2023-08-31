@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, redirect, url_for, session, jsonify, request
+from flask import Flask, render_template, redirect, url_for, session, jsonify, request, send_from_directory
 from flask_session import Session
 import pandas as pd
 import jinja2.exceptions
@@ -105,6 +105,8 @@ def admin(pagename):
         print(session.get(pagename))
         if pagename == "clustering":
             group, datas = datasets_cluster()
+            list_wordcloud = os.listdir('static/img/wordcloud')
+            session['list_wordcloud'] = list_wordcloud
             return render_template(pagename+'.html', pagename=pagename, session=dict(session), group=group, datas=datas[:5000])
         if pagename == "datasets":
             datas = datasets_open()
@@ -120,7 +122,7 @@ def admin(pagename):
         return render_template(pagename+'.html', pagename=pagename, session=dict(session), datas=datas)
     elif pagename != "upload":
         return render_template(pagename+'.html')
-    return "Success"
+    return "Success", 200
 
 @app.route('/session/<pagename>/<value>')
 def session_create(pagename, value):
@@ -159,6 +161,11 @@ def upload_file():
         else:
             return 'No file uploaded.'
     return redirect(f'/{pagename}')
+
+@app.route('/download_file')
+def download_file():
+    print(request.args.get('filename'))
+    return send_from_directory(app.static_folder, request.args.get('filename'), as_attachment=True)
 
 @app.errorhandler(jinja2.exceptions.TemplateNotFound)
 def template_not_found(e):

@@ -46,11 +46,11 @@
                       <th>Name</th>
                     </tr>
                   </thead>
-                  {% for image in images %}
+                  {% for image in session.list_wordcloud %}
                   <tbody>
                     <tr>
                       <td>
-                        <img src="{{image.path}}" alt="Wordcloud {{loop.index}}">
+                        <img src="{{ url_for('download_file', filename='img/wordcloud/' + image + '') }}" alt="Wordcloud {{loop.index}}">
                       </td>
                       <td>
                         <div class="input-group"></div>
