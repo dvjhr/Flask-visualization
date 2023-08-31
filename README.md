@@ -6,6 +6,7 @@ The template has been adapted to use flask backend framework.
 
 ```
 git clone https://github.com/dvjhr/Flask-visualization.git
+pip install -r requirement.txt
 python sbadmin2.py
 ```
 
