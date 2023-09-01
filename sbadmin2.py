@@ -175,6 +175,20 @@ def create_cluster():
         print("CLUSTERING RUN")
     return {}, 200
 
+@app.route('/create_cluster/data', methods=['POST'])
+def receive_data():
+    try:
+        data = request.get_json()
+        cloud_names = data.get('cloudNames', [])
+        
+        # Process the cloud_names list as needed
+        # For example, you can print it or perform some operations.
+        
+        # Respond with a success message if required
+        return jsonify({'message': 'Data received successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/download_file')
 def download_file():
     print(request.args.get('filename'))

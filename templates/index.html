@@ -200,7 +200,7 @@
             <div class="col-xl-8 col-lg-7">
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Grouping</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Clustering</h6>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -211,7 +211,6 @@
                           <th>Cluster Name</th>
                           <th>Total Comments</th>
                           <th>Date</th>
-                          <th>Status</th>
                         </tr>
                       </thead>
                       {% if session.clustering %}
@@ -222,7 +221,6 @@
                           <td>Cluster {{key}}</td>
                           <td>{{value}}</td>
                           <td>Today</td>
-                          <td>Ok</td>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -318,8 +316,8 @@
                         {% for data in labeling_datas %}
                         <tr>
                           <td>{{loop.index}}</td>
-                          <td>{{data['cluster']}}</td>
                           <td>{{data['komentarClean']}}</td>
+                          <td>{{data['cluster']}}</td>
                         {% if data['sentimen'] == 'positive' %}
                           <td><span class="badge badge-success">{{data['sentimen']}}</span></td>
                         {% elif data['sentimen'] == 'neutral' %}
@@ -385,7 +383,7 @@
       });
       $(document).ready(function() {
         $('#dataTable_clustering').DataTable({
-          "pageLength": {{cluster_group|length}}
+          "pageLength": 5
         });
       });
     </script>
