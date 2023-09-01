@@ -8,83 +8,87 @@ Original file is located at
 """
 
 import pandas as pd
-dataclean = pd.read_csv('datasetCleaned.csv')
-dataclean.head()
-
-dataclean.info()
-
-"""# EKstrasi Fitur TF-IDF"""
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Mengambil kolom komentar
-comments = dataclean['komentarClean'].tolist()
-
-# Membangun representasi numerik dari komentar menggunakan TF-IDF
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(comments)
-
-"""# Clustering dengan K-means"""
-
 from sklearn.cluster import KMeans
-
-# Jumlah cluster yang diinginkan
-num_clusters = 6
-
-# Melakukan k-means clustering
-kmeans = KMeans(n_clusters=num_clusters, n_init=10)
-kmeans.fit(X)
-
-# Mendapatkan label kluster untuk setiap komentar
-labels = kmeans.labels_
-
-# Menambahkan kolom label kluster ke dalam dataset
-dataclean['cluster'] = labels
-
-cluster_counts = dataclean.groupby('cluster').size()
-print(cluster_counts)
-
-#Wordcloud untuk tiap cluster
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-for i in range(num_clusters):
-    # Ambil kolom teks dari dataset dalam kluster tertentu
-    cluster = dataclean[dataclean['cluster'] == i]
-    text_column = 'komentarClean'  # Ganti dengan nama kolom teks dalam dataset Anda
-    text = ' '.join(cluster[text_column])
+import os
 
-    # Buat objek WordCloud dengan parameter yang diinginkan
-    wordcloud = WordCloud(
-        width=800,
-        height=400,
-        background_color='white',
-        colormap='Blues',
-        max_words=50,
-        stopwords=None
-    )
+wordcloud_path = 'static/img/wordcloud'
 
-    # Generate word cloud dari teks dalam kluster tertentu
-    wordcloud.generate(text)
+def delete_old_wordcloud():
+    print("REMOVED ALL PREVIOUS WORDCLOUDS")
+    for files in os.listdir(wordcloud_path):
+        try:
+            os.remove(os.path.join('static', 'img', 'wordcloud', files))
+        except:
+            print("UNSUCCESSFUL DELETE")
 
-    # Tampilkan word cloud untuk kluster tertentu
-    plt.figure(figsize=(8, 6))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')
-    plt.title(f'Word Cloud Cluster {i+1}')
-    plt.show()
+def draw_clustering(cluster_num):
+    dataclean = pd.read_csv('data/datasetCleaned.csv')
+    dataclean.head()
 
-from sklearn.metrics import silhouette_score
-# Menghitung inertia (jumlah kuadrat jarak setiap sampel ke pusat kluster terdekat)
-inertia = kmeans.inertia_
+    dataclean.info()
 
-# Menghitung silhouette score
-silhouette_avg = silhouette_score(X, labels)
+    """# EKstrasi Fitur TF-IDF"""
 
-# Menampilkan hasil evaluasi
-print("Inertia:", inertia)
-print("Silhouette Score:", silhouette_avg)
 
-dataclean.to_csv('datasetforLabel3.csv', index=False)
+    # Mengambil kolom komentar
+    comments = dataclean['komentarClean'].tolist()
 
-dataclean.head()
+    # Membangun representasi numerik dari komentar menggunakan TF-IDF
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(comments)
+
+    """# Clustering dengan K-means"""
+
+    # Jumlah cluster yang diinginkan
+    num_clusters = int(cluster_num)
+    print("NUM OF CLUSTER", num_clusters)
+
+    # Melakukan k-means clustering
+    kmeans = KMeans(n_clusters=num_clusters, n_init=10)
+    kmeans.fit(X)
+
+    # Mendapatkan label kluster untuk setiap komentar
+    labels = kmeans.labels_
+
+    # Menambahkan kolom label kluster ke dalam dataset
+    dataclean['cluster'] = labels
+
+    cluster_counts = dataclean.groupby('cluster').size()
+    print(cluster_counts)
+
+    delete_old_wordcloud()
+
+    #Wordcloud untuk tiap cluster
+    for i in range(num_clusters):
+        print(f"CREATING CLUSTER {i} of {num_clusters}")
+        # Ambil kolom teks dari dataset dalam kluster tertentu
+        cluster = dataclean[dataclean['cluster'] == i]
+        text_column = 'komentarClean'  # Ganti dengan nama kolom teks dalam dataset Anda
+        text = ' '.join(cluster[text_column])
+
+        # Buat objek WordCloud dengan parameter yang diinginkan
+        wordcloud = WordCloud(
+            width=1000,
+            height=800,
+            background_color='white',
+            colormap='Blues',
+            max_words=50,
+            stopwords=None
+        )
+
+        # Generate word cloud dari teks dalam kluster tertentu
+        wordcloud.generate(text)
+
+        # Tampilkan word cloud untuk kluster tertentu
+        plt.figure(figsize=(8, 6))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.title(f'Word Cloud Cluster {i+1}')
+        # plt.show()
+        plt.savefig(f'static/img/wordcloud/wordcloud_{i+1}')
+    return True
 

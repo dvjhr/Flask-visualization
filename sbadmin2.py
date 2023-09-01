@@ -7,6 +7,7 @@ from flask_cors import CORS, cross_origin
 import os
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from modul_2_1 import draw_clustering
 
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ def index():
     model_results = model_result()
     labeling_datas = datasets_sentiment()[:50]
     ranking_datas = datasets_ranking()
-    print("LAGIIII ", dict(session))
+    print("SESSION: ", dict(session))
     return render_template(
         'index.html',
         session=dict(session),
@@ -101,7 +102,7 @@ def admin(pagename):
     session['date'] = datetime.today().strftime('%d-%m-%Y')
     # print("HALOOO")
     if pagename in ['clustering','datasets','preprocessing','labeling','modelling','ranking']:
-        print("LAGIIII ", dict(session))
+        print("SESSION: ", dict(session))
         print(session.get(pagename))
         if pagename == "clustering":
             group, datas = datasets_cluster()
@@ -115,10 +116,12 @@ def admin(pagename):
             # return render_template(pagename+'.html', session=dict(session), datas=datas[:500])
         elif pagename == "labeling":
             datas = datasets_sentiment()
+            session['labeling'] = 1
         elif pagename == "modelling":
             datas = model_result()
         elif pagename == "ranking":
             datas = datasets_ranking()
+            session['ranking'] = 1
         return render_template(pagename+'.html', pagename=pagename, session=dict(session), datas=datas)
     elif pagename != "upload":
         return render_template(pagename+'.html')
@@ -161,6 +164,16 @@ def upload_file():
         else:
             return 'No file uploaded.'
     return redirect(f'/{pagename}')
+
+@app.route('/cluster/number')
+def create_cluster():
+    print("CREATING CLUSTER")
+    result = False
+    cluster_number = request.args.get('myCluster')
+    result = draw_clustering(cluster_number)
+    while not result:
+        print("CLUSTERING RUN")
+    return {}, 200
 
 @app.route('/download_file')
 def download_file():
