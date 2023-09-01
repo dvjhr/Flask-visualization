@@ -21,7 +21,7 @@ def index():
     clean_datasets_count = len(datasets_preprocess())
     cluster_group, cluster_data = datasets_cluster()
     model_results = model_result()
-    labeling_datas = datasets_sentiment()[:50]
+    labeling_datas = datasets_sentiment()
     ranking_datas = datasets_ranking()
     print("SESSION: ", dict(session))
     return render_template(
@@ -81,9 +81,10 @@ def datasets_preprocess():
     return dict_data
 
 def datasets_cluster():
-    csv_data = pd.read_csv('data/datasetWclusters.csv')
+    csv_data = pd.read_csv('data/datasetWclusters_new.csv')
     dict_data = csv_data.to_dict('records')
-    cluster_counts = csv_data.groupby(['cluster']).count().to_dict()['komentarClean']
+    csv_rank_data = pd.read_csv('data/resultRank_new.csv')
+    cluster_counts = csv_rank_data.to_dict('records')
     return cluster_counts, dict_data
 
 def datasets_sentiment():
@@ -100,7 +101,7 @@ def model_result():
 def admin(pagename):
     print(pagename)
     session['date'] = datetime.today().strftime('%d-%m-%Y')
-    # print("HALOOO")
+    datas = None
     if pagename in ['clustering','datasets','preprocessing','labeling','modelling','ranking']:
         print("SESSION: ", dict(session))
         print(session.get(pagename))
@@ -108,7 +109,7 @@ def admin(pagename):
             group, datas = datasets_cluster()
             list_wordcloud = os.listdir('static/img/wordcloud')
             session['list_wordcloud'] = list_wordcloud
-            return render_template(pagename+'.html', pagename=pagename, session=dict(session), group=group, datas=datas[:5000])
+            return render_template(pagename+'.html', pagename=pagename, session=dict(session), group=group, datas=datas)
         if pagename == "datasets":
             datas = datasets_open()
         elif pagename == "preprocessing":
@@ -180,6 +181,11 @@ def receive_data():
     try:
         data = request.get_json()
         cloud_names = data.get('cloudNames', [])
+        print(cloud_names)
+
+        clusterData = pd.read_csv('data/resultRank_new.csv')
+        clusterData['cluster_name'] = cloud_names
+        clusterData.to_csv('data/resultRank_new.csv', index=False)
         
         # Process the cloud_names list as needed
         # For example, you can print it or perform some operations.
@@ -187,6 +193,7 @@ def receive_data():
         # Respond with a success message if required
         return jsonify({'message': 'Data received successfully'}), 200
     except Exception as e:
+        print("ERROR: ", e)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/download_file')

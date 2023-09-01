@@ -5,14 +5,14 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">Clustering</h1>
+          <h1 class="h3 mb-2 font-weight-bold">Clustering</h1>
 
           <!-- DataTables Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 class="m-0 font-weight-bold text-primary">Clustering {{session.clustering}}</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Clustering</h6>
               <div class="dropdown no-arrow">
-                <button class="btn btn-primary" role="button" type="submit" onclick="call_api()">Process</button>
+                <button class="btn btn-primary" role="button" type="submit" onclick="printCluster()">Process</button>
               </div>
             </div>
             <div class="card-body">
@@ -29,12 +29,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for key, value in group.items() %}
+                    {% for item in group %}
                     <tr>
-                      <td>{{key}}</td>
-                      <td>Cluster {{key}}</td>
-                      <td>{{value}}</td>
-                      <td>Today</td>
+                      <td>{{item.cluster}}</td>
+                      <td>{{item.cluster_name}}</td>
+                      <td>{{item.total_count}}</td>
+                      <td>{{session['date']}}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -68,7 +68,6 @@
                     <input type="number" name="myCluster" id="myCluster">
                     <button class="btn btn-primary" id="submitCluster" onclick="makeCluster()">Submit</button>
                 </div>
-                
                 {% endif %}
               </div>
             </div>
@@ -82,7 +81,8 @@
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-borderless" id="dataTable" width="100%" cellspacing="0">
-                  {% if session.clustering == 2 %}
+                  {% if session.clustering %}
+                  {% if (session.clustering|int) == 2 %}
                   <thead>
                     <tr>
                       <th>Number</th>
@@ -99,6 +99,7 @@
                     </tr>
                   {% endfor %}
                   </tbody>
+                  {% endif %}
                   {% else %}
                   {% endif %}
                 </table>
@@ -137,7 +138,7 @@
         }
       }
 
-      async function getJSON(num) {
+      async function getCluster(num) {
         try {
             const response = await fetch(`/cluster/number?myCluster=${num}`);
             if (response.ok) {
@@ -153,7 +154,7 @@
       }
       async function makeCluster() {
         const num = document.getElementById('myCluster').value;
-        const json = await getJSON(num);
+        const json = await getCluster(num);
         
         if (json) {
             console.log(json);
@@ -172,7 +173,7 @@
 
     </script>
     <script>
-      async function getJSON(array) {
+      async function showCluster(array) {
           try {
               const response = await fetch('/create_cluster/data', {
                   method: 'POST',
@@ -197,7 +198,8 @@
       async function printCluster() {
         const elements = document.getElementsByClassName('cloud_name');
         const values = Array.from(elements).map(element => element.value);
-        const json = await getJSON(values);
+        console.log(values)
+        const json = await showCluster(values);
         
         if (json) {
             console.log(json);

@@ -6,7 +6,7 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 ">Overview</h1>
+            <h1 class="h3 mb-0 font-weight-bold">Dashboard</h1>
             <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary -sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
           </div>
 
@@ -19,7 +19,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-calendar fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/total_data.svg') }}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -41,7 +41,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-dollar-sign fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/clean_data.svg' )}}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -63,7 +63,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-dollar-sign fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/data_used.svg' )}}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -85,7 +85,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-comments fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/resource.svg' )}}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -110,7 +110,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-calendar fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/total_data.svg') }}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -132,7 +132,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-dollar-sign fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/clean_data.svg') }}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -154,7 +154,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-dollar-sign fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/data_used.svg') }}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -176,7 +176,7 @@
               <div class="card  h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters">
-                    <i class="fas fa-comments fa-2x"></i>
+                    <img src="{{ url_for('static', filename='img/resource.svg') }}"></img>
                   </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -197,7 +197,7 @@
           <div class="row">
 
             <!-- Table -->
-            <div class="col-xl-8 col-lg-7">
+            <div class="col-xl-7 col-lg-7">
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
                   <h6 class="m-0 font-weight-bold text-primary">Clustering</h6>
@@ -215,11 +215,11 @@
                       </thead>
                       {% if session.clustering %}
                       <tbody>
-                        {% for key, value in cluster_group.items() %}
+                        {% for item in cluster_group %}
                         <tr>
-                          <td>{{key}}</td>
-                          <td>Cluster {{key}}</td>
-                          <td>{{value}}</td>
+                          <td>{{item.cluster}}</td>
+                          <td>{{item.cluster_name}}</td>
+                          <td>{{item.total_count}}</td>
                           <td>Today</td>
                         </tr>
                         {% endfor %}
@@ -234,7 +234,7 @@
             </div>
 
             <!-- Gauge JS -->
-            <div class="col-xl-4 col-lg-5">
+            <div class="col-xl-5 col-lg-5">
               <div class="card mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -250,20 +250,26 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
+                  <div class="row mb-2 d-block">
+                    <h6 class="text-center">Model</h6>
+                  </div>
+                  <div class="row mb-2 d-block">
+                    <h5 class="text-center">Decision Tree</h5>
+                  </div>
                   <div id="myGauge"></div>
-                  <div class="mt-4 text-center small">
+                  <div class="mt-2 text-center small">
                     {% if session.index %}
                     <div class="row">
                       <div class="col-sm-4">
-                        <h5>{{100*model_results[1]['Precision']|round(3)}}</h5>
+                        <h5 class="font-weight-bold">{{100*model_results[1]['Precision']|round(3)}}%</h5>
                         <h6>Precision</h6>
                       </div>
                       <div class="col-sm-4">
-                        <h5>{{100*model_results[1]['Recall']|round(3)}}</h5>
+                        <h5 class="font-weight-bold">{{100*model_results[1]['Recall']|round(3)}}%</h5>
                         <h6>Recall</h6>
                       </div>
                       <div class="col-sm-4">
-                        <h5>{{100*model_results[1]['F1-Score']|round(3)}}</h5>
+                        <h5 class="font-weight-bold">{{100*model_results[1]['F1-Score']|round(3)}}%</h5>
                         <h6>F1-Score</h6>
                       </div>
                     </div>
@@ -345,6 +351,9 @@
                 </div>
                 {% if session.ranking %}
                 <div class="card-body">
+                  <input type="date" name="" id="">
+                  <input type="date" name="" id="">
+                  <button class="btn btn-primary">Go</button>
                   <canvas id="rankingChart"></canvas>
                 </div>
                 {% else %}
@@ -422,12 +431,13 @@
         {
           domain: { x: [0, 1], y: [0, 1] },
           value: value,
-          title: { text: "Accuracy", font: { size: 24 } },
+          title: { text: "Accuracy (%)", font: { size: 24 } },
           type: "indicator",
           mode: "gauge+number",
           gauge: { 
             axis: { range: [0, 100] },
-            bar: { color: "#E65F2B" },
+            bar: { color: "#1A932E" },
+            // bar: { color: "#E65F2B" },
           }
         }
       ];

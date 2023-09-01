@@ -55,10 +55,12 @@ def draw_clustering(cluster_num):
     labels = kmeans.labels_
 
     # Menambahkan kolom label kluster ke dalam dataset
-    dataclean['cluster'] = labels
+    dataclean['cluster'] = labels+1
 
     cluster_counts = dataclean.groupby('cluster').size()
+    print(type(cluster_counts))
     print(cluster_counts)
+    cluster_counts.to_csv('data/resultRank_new.csv', header=['total_count'])
 
     delete_old_wordcloud()
 
@@ -66,7 +68,7 @@ def draw_clustering(cluster_num):
     for i in range(num_clusters):
         print(f"CREATING CLUSTER {i} of {num_clusters}")
         # Ambil kolom teks dari dataset dalam kluster tertentu
-        cluster = dataclean[dataclean['cluster'] == i]
+        cluster = dataclean[dataclean['cluster'] == i+1]
         text_column = 'komentarClean'  # Ganti dengan nama kolom teks dalam dataset Anda
         text = ' '.join(cluster[text_column])
 
@@ -90,5 +92,7 @@ def draw_clustering(cluster_num):
         plt.title(f'Word Cloud Cluster {i+1}')
         # plt.show()
         plt.savefig(f'static/img/wordcloud/wordcloud_{i+1}')
+
+    dataclean.to_csv('data/datasetWclusters_new.csv', index=False)
     return True
 
