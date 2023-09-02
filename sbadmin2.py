@@ -8,6 +8,7 @@ import os
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from modul_2_1 import draw_clustering
+from modul_3_2 import get_predict_dataset
 
 
 app = Flask(__name__)
@@ -40,7 +41,7 @@ def index():
 # @app.route('/rank_data')
 # @cross_origin(origin='*')
 def datasets_ranking():
-    csv_data = pd.read_csv('data/resultRank.csv')
+    csv_data = pd.read_csv('data/resultRank_new_new.csv')
     dict_data = csv_data.to_dict('records')
     return dict_data
 
@@ -88,7 +89,8 @@ def datasets_cluster():
     return cluster_counts, dict_data
 
 def datasets_sentiment():
-    csv_data = pd.read_csv('data/datasetWsentiment.csv')
+    get_predict_dataset()
+    csv_data = pd.read_csv('data/finalResult.csv')
     dict_data = csv_data.to_dict('records')
     return dict_data
 

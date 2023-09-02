@@ -261,15 +261,15 @@
                     {% if session.index %}
                     <div class="row">
                       <div class="col-sm-4">
-                        <h5 class="font-weight-bold">{{100*model_results[1]['Precision']|round(3)}}%</h5>
+                        <h5 class="font-weight-bold">{{100*model_results[0]['Precision']|round(3)}}%</h5>
                         <h6>Precision</h6>
                       </div>
                       <div class="col-sm-4">
-                        <h5 class="font-weight-bold">{{100*model_results[1]['Recall']|round(3)}}%</h5>
+                        <h5 class="font-weight-bold">{{100*model_results[0]['Recall']|round(3)}}%</h5>
                         <h6>Recall</h6>
                       </div>
                       <div class="col-sm-4">
-                        <h5 class="font-weight-bold">{{100*model_results[1]['F1-Score']|round(3)}}%</h5>
+                        <h5 class="font-weight-bold">{{100*model_results[0]['F1-Score']|round(3)}}%</h5>
                         <h6>F1-Score</h6>
                       </div>
                     </div>
@@ -403,11 +403,11 @@
       {
         type: 'bar',
         data: {
-          labels: data.map(row => row.Cluster),
+          labels: data.map(row => row.cluster_name),
           datasets: [
             {
-              label: 'Total Comments',
-              data: data.map(row => row.Negative_Count),
+              label: 'Total Negative Comments (%)',
+              data: data.map(row => row.negative_percentage),
               backgroundColor: "rgba(230, 95, 43, 1)",
             }
           ]
@@ -421,11 +421,11 @@
     <script>
       var value = 0
       var ses = JSON.parse('{{session|tojson|safe}}')
-      var mod_res = JSON.parse('{{model_results[0]|tojson|safe}}')
+      var mod_res = JSON.parse('{{model_results|tojson|safe}}')
       console.log(ses)
       console.log(mod_res)
       if (ses.index) {
-        value = 100*mod_res.Accuracy
+        value = 100*mod_res[0].Accuracy
       }
       var data = [
         {

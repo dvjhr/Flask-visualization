@@ -48,15 +48,16 @@
     <script>
       var ctx = document.getElementById("rankingChart")
       var data = {{datas|tojson}}
+      console.log(data)
       var chart = new Chart(ctx, 
       {
         type: 'bar',
         data: {
-          labels: data.map(row => row.Cluster),
+          labels: data.map(row => row.cluster_name),
           datasets: [
             {
-              label: 'Total Comments',
-              data: data.map(row => row.Negative_Count),
+              label: 'Total Negative Comments (%)',
+              data: data.map(row => row.negative_percentage),
               backgroundColor: "rgba(230, 95, 43, 1)",
             }
           ]

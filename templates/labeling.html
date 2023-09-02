@@ -29,12 +29,12 @@
                       <td>{{loop.index}}</td>
                       <td>{{data['komentarClean']}}</td>
                       <td>{{data['cluster']}}</td>
-                      {% if data['sentimen'] == 'positive' %}
-                        <td><span class="badge badge-success">{{data['sentimen']}}</span></td>
-                      {% elif data['sentimen'] == 'neutral' %}
-                        <td><span class="badge badge-warning">{{data['sentimen']}}</span></td>
+                      {% if data['prediksi_sentimen'] == 'positive' %}
+                        <td><span class="badge badge-success">{{data['prediksi_sentimen']}}</span></td>
+                      {% elif data['prediksi_sentimen'] == 'neutral' %}
+                        <td><span class="badge badge-warning">{{data['prediksi_sentimen']}}</span></td>
                       {% else %}
-                        <td><span class="badge badge-danger">{{data['sentimen']}}</span></td>
+                        <td><span class="badge badge-danger">{{data['prediksi_sentimen']}}</span></td>
                       {% endif %}
                     </tr>
                     {% endfor %}
